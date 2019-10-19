@@ -1,4 +1,5 @@
 import Search from './models/Search';
+import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
 import {elements, renderLoader, clearLoader} from './views/base';
 
@@ -9,7 +10,7 @@ import {elements, renderLoader, clearLoader} from './views/base';
 //  - Liked recipes
 const state = {};
 
-// Purpose: controller for search - interacts with Search model and searchView view
+// Purpose: Search controller - interacts with Search model and searchView view
 const controlSearch = async () => {
     // 1. Get query from view
     const query = searchView.getInput();
@@ -62,3 +63,8 @@ elements.searchResPages.addEventListener('click', e => {
         searchView.renderResults(state.search.result, goToPage);
     }
 });
+
+// Purpose: Recipe controller - interacts with Recipe model and recipeView view
+const r = new Recipe(46956);
+r.getRecipe();
+console.log(r);
