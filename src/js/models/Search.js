@@ -5,6 +5,7 @@ export default class Search {
         this.query = query;
     }
 
+    // Purpose: API call to Food2Fork based on search query value
     async getResults() {
         const key = '34c9f2aabd9c06a05e603615806facde';
         try {
