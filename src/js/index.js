@@ -29,15 +29,21 @@ const controlSearch = async () => {
         // Render loader in recipe list
         renderLoader(elements.searchRes);
 
-        // 4. Search for recipes
-        await state.search.getResults();
+        try {
+            // 4. Search for recipes
+            await state.search.getResults();
 
-        // 5. Render results on UI
-        // Clear loader
-        clearLoader();
+            // 5. Render results on UI
+            // Clear loader
+            clearLoader();
 
-        // Passes search result to be rendered in searchView
-        searchView.renderResults(state.search.result);
+            // Passes search result to be rendered in searchView
+            searchView.renderResults(state.search.result);
+        } catch(err) {
+            alert('Something went wrong with the search...');
+            clearLoader();
+        }
+
     }
 }
 
@@ -65,6 +71,33 @@ elements.searchResPages.addEventListener('click', e => {
 });
 
 // Purpose: Recipe controller - interacts with Recipe model and recipeView view
-const r = new Recipe(46956);
-r.getRecipe();
-console.log(r);
+const controlRecipe = async () => {
+    // 1. Get ID from url
+    const id = window.location.hash.replace('#', '');
+    console.log(id);
+
+    if (id) {
+        // 2. Prepare UI for changes
+
+        // 3. Create new recipe object
+        state.recipe = new Recipe(id);
+
+        try {
+            // 4. Get recipe data
+            await state.recipe.getRecipe();
+
+            // 5. Calculate servings and time
+            state.recipe.calcTime();
+            state.recipe.calcServings();
+
+            // 6. Render recipe
+            console.log(state.recipe);
+        } catch (err) {
+            alert('Error processing recipe!');
+        }
+        
+    }
+};
+
+// Purpose: Event Listener for window load and hashchange that calls controlRecipe
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
