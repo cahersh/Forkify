@@ -11,6 +11,7 @@ export const clearInput = () => {
 // Purpose: clear the recipes list
 export const clearResults = () => {
     elements.searchResultList.innerHTML = '';
+    elements.searchResPages.innerHTML = '';
 };
 
 // Purpose: limit length of recipe title but don't split individual words
@@ -58,8 +59,62 @@ const renderRecipe = recipe => {
     elements.searchResultList.insertAdjacentHTML('beforeend', markup);
 };
 
+// Purpose: creates HTML for button
+// Inputs: page - page number we are on, type - 'prev' or 'next'
+const createButton = (page, type) => `
+    <button class="btn-inline results__btn--${type}" data-goto=${type === 'prev' ? page - 1 : page + 1}>
+        <span>Page ${type === 'prev' ? page - 1 : page + 1}</span>    
+        <svg class="search__icon">
+            <use href="img/icons.svg#icon-triangle-${type === 'prev' ? 'left': 'right'}"></use>
+        </svg>
+    </button>
+`;
+
+// Purpose: render page buttons. Page 1, show button for page 2. Page X, show buttons for page X-1 and page X+1. Page last, show button for previous
+// Inputs: page - page to display recipes, numResults - total number of results(recipes), RecPerPage - results(recipes) per page
+const renderButtons = (page, numResults, ResPerPage) => {
+    // Total number of pages - round up if decimal
+    const pages = Math.ceil(numResults / ResPerPage);
+
+    // element to place on HTML
+    let button;
+
+    // On first page and there is more than 1 page
+    if (page === 1 && pages > 1) {
+        // Only button to go to next page
+        button = createButton(page, 'next');
+    }
+    // On page X
+    else if (page < pages) {
+        // Display button for next page and dispaly button for previous page
+        button = `
+            ${createButton(page, 'prev')}
+            ${createButton(page, 'next')}
+        `;
+    }
+    // On last page and there is more than 1 page
+    else if (page === pages && pages > 1) {
+        // Only button to go to previous page
+        button = createButton(page, 'prev');
+    }
+
+    // Insert buttons in HTML
+    elements.searchResPages.insertAdjacentHTML('afterbegin', button);
+
+};
+
 // Purpose: renders all recipes by calling renderRecipe
-// Inputs: all recipes
-export const renderResults = recipes => {
-    recipes.forEach(renderRecipe);
+// Inputs: recipes - all recipes, page - page to display results (recipes), resPerPage - number of results (recipes) per page
+export const renderResults = (recipes, page = 1, resPerPage = 10) => {
+    //start location for slice. ex page = 2, start = 10
+    const start = (page - 1) * resPerPage; 
+
+    // end location for slice. ex page = 2, end = 20
+    const end = page * resPerPage; 
+
+    // render recPerPage for the given page
+    recipes.slice(start,end).forEach(renderRecipe);
+
+    // render pagination buttons
+    renderButtons(page, recipes.length, resPerPage);
 };

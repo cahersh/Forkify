@@ -22,7 +22,7 @@ const controlSearch = async () => {
         // Clears search input on searchView view
         searchView.clearInput();
 
-        // Clears recipe list
+        // Clear recipe list
         searchView.clearResults();
 
         // Render loader in recipe list
@@ -34,7 +34,7 @@ const controlSearch = async () => {
         // 5. Render results on UI
         // Clear loader
         clearLoader();
-        
+
         // Passes search result to be rendered in searchView
         searchView.renderResults(state.search.result);
     }
@@ -44,6 +44,21 @@ const controlSearch = async () => {
 elements.searchForm.addEventListener('submit', e => {
     e.preventDefault();
     controlSearch();
-})
+});
 
+// Purpose: Event listener for page button clicks
+elements.searchResPages.addEventListener('click', e => {
+    // find closets element (.btn-inline) for span and svg
+    const btn = e.target.closest('.btn-inline'); 
 
+    if (btn) {
+        // Holds integer of page to go to
+        const goToPage = parseInt(btn.dataset.goto, 10); 
+
+        // Clear recipe list
+        searchView.clearResults();
+
+        // Call renderResults with the page to render
+        searchView.renderResults(state.search.result, goToPage);
+    }
+});
