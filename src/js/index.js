@@ -32,7 +32,7 @@ const controlSearch = async () => {
         try {
             // 4. Search for recipes
             await state.search.getResults();
-
+			
             // 5. Render results on UI
             // Clear loader
             clearLoader();
@@ -43,7 +43,6 @@ const controlSearch = async () => {
             alert('Something went wrong with the search...');
             clearLoader();
         }
-
     }
 }
 
@@ -56,11 +55,11 @@ elements.searchForm.addEventListener('submit', e => {
 // Purpose: Event listener for page button clicks
 elements.searchResPages.addEventListener('click', e => {
     // find closets element (.btn-inline) for span and svg
-    const btn = e.target.closest('.btn-inline'); 
-
+    const btn = e.target.closest('.btn-inline');
+	
     if (btn) {
         // Holds integer of page to go to
-        const goToPage = parseInt(btn.dataset.goto, 10); 
+        const goToPage = parseInt(btn.dataset.goto, 10);
 
         // Clear recipe list
         searchView.clearResults();
@@ -74,7 +73,6 @@ elements.searchResPages.addEventListener('click', e => {
 const controlRecipe = async () => {
     // 1. Get ID from url
     const id = window.location.hash.replace('#', '');
-    console.log(id);
 
     if (id) {
         // 2. Prepare UI for changes
@@ -83,19 +81,19 @@ const controlRecipe = async () => {
         state.recipe = new Recipe(id);
 
         try {
-            // 4. Get recipe data
+            // 4. Get recipe data and parse ingredients
             await state.recipe.getRecipe();
+            state.recipe.parseIngredients();
 
             // 5. Calculate servings and time
             state.recipe.calcTime();
             state.recipe.calcServings();
 
             // 6. Render recipe
-            console.log(state.recipe);
+			console.log(state.recipe);
         } catch (err) {
             alert('Error processing recipe!');
         }
-        
     }
 };
 
