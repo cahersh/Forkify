@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {key} from '../config';
+import {Fraction} from 'fractional';
 
 export default class Recipe {
     constructor(id) {

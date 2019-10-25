@@ -14,6 +14,20 @@ export const clearResults = () => {
     elements.searchResPages.innerHTML = '';
 };
 
+// Purpose: Highlight the selected recipe
+// Inputs: id - the id of the recipe
+export const highlightSelected = id => {
+    const resultsArr = Array.from(document.querySelectorAll('.results__link'));
+    
+    // Remove active for each recipe in list
+    resultsArr.forEach(el => {
+        el.classList.remove('results__link--active');
+    });
+
+    // Adds active class to selected recipe from list
+    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+};
+
 // Purpose: limit length of recipe title but don't split individual words
 // Inputs: title - title of the recipe, limit - character limit for title
 const limitRecipeTitle = (title, limit = 17) => {
