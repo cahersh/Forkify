@@ -31,5 +31,5 @@ export const deleteItem = id => {
     const item = document.querySelector(`[data-itemid="${id}"]`);
 
     // Remove item from the shopping list
-    item.parentElement.removeChild(item);
+    if (item) item.parentElement.removeChild(item);
 };

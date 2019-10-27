@@ -3,6 +3,7 @@ import Recipe from './models/Recipe';
 import List from './models/List';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
+import * as listView from './views/listView';
 import {elements, renderLoader, clearLoader} from './views/base';
 
 // Global state of the app
@@ -11,6 +12,7 @@ import {elements, renderLoader, clearLoader} from './views/base';
 //  - Shopping list object
 //  - Liked recipes
 const state = {};
+window.state = state; //TESTING
 
 // Purpose: Search controller - interacts with Search model and searchView view
 const controlSearch = async () => {
@@ -109,6 +111,42 @@ const controlRecipe = async () => {
 // Purpose: Event Listener for window load and hashchange that calls controlRecipe
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
+// Purpose: List controller - interacts with List model and listView view
+const controlList = () => {
+    // 1. Create a new list if there is no list yet
+    if(!state.list) state.list = new List();
+
+    // 2. Add each ingredient to the list and UI
+    state.recipe.ingredients.forEach(el => {
+        // Update state
+        const item = state.list.addItem(el.count, el.unit, el.ingredient);
+        // Update UI
+        listView.renderItem(item);
+    });
+}
+
+// Purpose: Event Listener to handle delete and update list item events
+elements.shopping.addEventListener('click', e => {
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+
+    // Handle the delete button
+    if(e.target.matches('.shopping__delete, .shopping__delete *')) {
+        // Delete from state
+        state.list.deleteItem(id);
+
+        // Delete from UI
+        listView.deleteItem(id);
+    }
+    // Handle the count update button
+    else if (e.target.matches('.shopping__count-value')) {
+        // Get new value from input
+        const val = parseFloat(e.target.value, 10);
+        
+        // Update the state
+        state.list.updateCount(id, val);
+    }
+});
+
 // Purpose: Event Listener to handle recipe button clicks
 elements.recipe.addEventListener('click', e => {
     if (e.target.matches('.btn-decrease, .btn-decrease *')) {
@@ -123,7 +161,10 @@ elements.recipe.addEventListener('click', e => {
         state.recipe.updateServings('inc');
         recipeView.updateServingsIngredients(state.recipe);
     }
-    console.log(state.recipe);
+    else if (e.target.matches('.recipe__btn--add,.recipe__btn--add *')) {
+        // Add recipes to shopping list button is clicked
+        controlList();
+    }
 });
 
 window.l = new List();
