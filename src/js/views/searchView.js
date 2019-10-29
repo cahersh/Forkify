@@ -25,12 +25,12 @@ export const highlightSelected = id => {
     });
 
     // Adds active class to selected recipe from list
-    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+    document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');
 };
 
 // Purpose: limit length of recipe title but don't split individual words
 // Inputs: title - title of the recipe, limit - character limit for title
-const limitRecipeTitle = (title, limit = 17) => {
+export const limitRecipeTitle = (title, limit = 17) => {
     const newTitle = [];
     // Test if title is longer than limit
     if (title.length > limit) {

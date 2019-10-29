@@ -5,6 +5,7 @@ import Likes from './models/Likes';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 import * as listView from './views/listView';
+import * as likesView from './views/likesView';
 import {elements, renderLoader, clearLoader} from './views/base';
 
 // Global state of the app
@@ -101,9 +102,13 @@ const controlRecipe = async () => {
 
             // 6. Render recipe
             clearLoader();
-            recipeView.renderRecipe(state.recipe);
+            recipeView.renderRecipe(
+                state.recipe,
+                state.likes.isLiked(id)
+            );
 
         } catch (err) {
+            console.log(err);
             alert('Error processing recipe!');
         }
     }
@@ -149,6 +154,8 @@ elements.shopping.addEventListener('click', e => {
 });
 
 // Purpose: Like controller - interacts with Like model
+state.likes = new Likes(); //TESTING
+likesView.toggleLikeMenu(state.likes.getNumLikes()); // TESTING
 const controlLike = () => {
     // 1. Create a new like if there is no like yet
     if (!state.likes) state.likes = new Likes();
@@ -167,9 +174,10 @@ const controlLike = () => {
         );
 
         // Toggle the like button
+        likesView.toggleLikeBtn(true);
 
         // Add like to UI list
-        console.log(state.likes);
+        likesView.renderLike(newLike);
     }
     else {
         // Liked
@@ -178,10 +186,14 @@ const controlLike = () => {
         state.likes.deleteLike(currentID);
 
         // Toggle the like button
+        likesView.toggleLikeBtn(false);
 
         // Remove like to UI list
-        console.log(state.likes);
+        likesView.deleteLike(currentID);
     }
+
+    // Toggle like menu if number of likes is greater than zero
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
 };
 
 // Purpose: Event Listener to handle recipe button clicks
