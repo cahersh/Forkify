@@ -14,7 +14,6 @@ import {elements, renderLoader, clearLoader} from './views/base';
 //  - Shopping list object
 //  - Liked recipes
 const state = {};
-window.state = state; //TESTING
 
 // Purpose: Search controller - interacts with Search model and searchView view
 const controlSearch = async () => {
@@ -154,8 +153,6 @@ elements.shopping.addEventListener('click', e => {
 });
 
 // Purpose: Like controller - interacts with Like model
-state.likes = new Likes(); //TESTING
-likesView.toggleLikeMenu(state.likes.getNumLikes()); // TESTING
 const controlLike = () => {
     // 1. Create a new like if there is no like yet
     if (!state.likes) state.likes = new Likes();
@@ -220,4 +217,16 @@ elements.recipe.addEventListener('click', e => {
     }
 });
 
-window.l = new List();
+// Purpose: Event Listener for page load - Restore liked recipes on page load
+window.addEventListener('load', () => {
+    state.likes = new Likes();
+
+    // Restore likes
+    state.likes.readStorage();
+
+    // Toggle like menu button
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
+
+    // Render existing likes
+    state.likes.likes.forEach(like => likesView.renderLike(like));
+});

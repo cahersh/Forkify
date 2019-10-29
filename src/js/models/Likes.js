@@ -9,6 +9,10 @@ export default class Likes {
     addLike(id, title, author, img) {
         const like = {id, title, author, img};
         this.likes.push(like);
+
+        // Perist data in localStorage
+        this.persistData();
+
         return like;
     };
 
@@ -19,6 +23,9 @@ export default class Likes {
         const index = this.likes.findIndex(el => el.id === id);
         // remove that recipe from likes
         this.likes.splice(index, 1);
+
+        // Perist data in localStorage
+        this.persistData()
     };
 
     // Purpose: determine if the recipe is liked
@@ -33,5 +40,18 @@ export default class Likes {
     // Output: the number of liked recipes
     getNumLikes() {
         return this.likes.length;
+    }
+
+    // Purpose: call setItem for localStorage to keep liked recipes on page refresh
+    persistData() {
+        localStorage.setItem('likes', JSON.stringify(this.likes));
+    }
+
+    // Purpose: gets the saved likes from localStorage
+    readStorage() {
+        const storage = JSON.parse(localStorage.getItem('likes'));
+        
+        // Restorings likes from localStorage
+        if (storage) this.likes = storage;
     }
 }
